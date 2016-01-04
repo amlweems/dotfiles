@@ -1,0 +1,49 @@
+
+# Shortcuts
+alias i="ipython"
+alias s="source $HOME/.bash/shell"
+alias subl="reattach-to-user-namespace ~/bin/subl"
+alias preview="open -a Preview"
+alias pb="curl -F 'f:1=<-'"
+
+function prae() {
+export __prompt_color="$FG_RED"
+export PS1="\${__prompt_color}-[ \\t ] engineer@praetorian \\w\\e[m\\n\\$ ";
+export HOME=$HOME/praetorian
+cd $HOME
+}
+
+function ginit(){
+    if [ -e ".git" ]; then
+        echo "already initialized"
+    else
+        git init
+        git add .
+        git commit -m "Initial commit"
+    fi
+}
+
+function shrug(){
+    echo -n "¯\_(ツ)_/¯" | pbcopy
+}
+function grepr(){
+    grep -ir "$*" ./
+}
+
+function f() {
+    find . -iname "$@"
+}
+function f1() {
+    f "$@"|head -n1
+}
+
+alias fw="/usr/libexec/ApplicationFirewall/socketfilterfw"
+
+# Utilities
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+
+# Markdown -> HTML of last command
+alias md='pandoc -s -f markdown -t html $_ > /tmp/index.html && open /tmp/index.html'
+
+# Praetorian vpn
+alias vpn="$HOME/keymat/praetorian/vpn"

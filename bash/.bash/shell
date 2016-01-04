@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Shell options, environment variables and readline settings
+# =============================================================================
+
+# Globbing and completion
+# -----------------------------------------------------------------------------
+# Case-insensitive globbing.
+shopt -s nocaseglob;
+
+# Treat ** as a special globbing character
+shopt -s globstar 2>/dev/null;
+
+# Do not autocomplete when accidentally pressing Tab on an empty line. (It takes
+# forever and yields "Display all 15 gazillion possibilites?")
+shopt -s no_empty_cmd_completion;
+
+# Set C-w to delete words based on unix filename rules
+stty werase undef
+bind '\C-w:unix-filename-rubout'
+
+# Do not overwrite files when redirecting using ">".
+# Note that you can still override this with ">|".
+# set -o noclobber;
+
+export PROMPT_DIRTRIM=2
+
+# Prefer English and use UTF-8.
+printf -v available_locales ' %s ' $(locale -a);
+for lang in en_US en_GB en; do
+	for locale in "$lang".{UTF-8,utf8}; do
+		if [[ "$available_locales" =~ " $locale " ]]; then
+			export LC_ALL="$locale";
+			export LANG="$lang";
+			break 2;
+		fi;
+	done;
+done;
+unset available_locales lang locale;
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
+
+
+# ANSI colours and font properties for xterm
+# -----------------------------------------------------------------------------
+# See http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+# Using "tput" would be more portable, but this is slightly faster. I used to
+# use "tput setaf 1" etc., so maybe I will change it back some day.
+let i=0;
+for color in BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE '' DEFAULT; do
+	if [ -n "$color" ]; then
+		printf -v "FG_$color" $'\e[%dm' $((30 + $i));
+		printf -v "BG_$color" $'\e[%dm' $((40 + $i));
+	fi;
+	let i++;
+done;
+let i=0;
+for style in RESET BOLD '' '' UNDERLINE BLINK '' REVERSE HIDDEN; do
+	if [ -n "$style" ]; then
+		printf -v "FONT_$style" $'\e[%dm' $i;
+		[ "$style" != 'RESET' ] && printf -v "FONT_NOT_$style" $'\e[%dm' $(($i + 20));
+	fi;
+	let i++;
+done;
+unset i color style;
+# "Not bold" is not \e[21m, but \e[22m. ("2" means "faint" on some terminals.)
+export FONT_NOT_BOLD=$'\e[22m';
+# Reset the font style, but not the color. (Unlike $FONT_RESET.)
+export FONT_NORMAL="${FONT_NOT_BOLD}${FONT_NOT_UNDERLINE}${FONT_NOT_BLINK}${FONT_NOT_REVERSE}${FONT_NOT_HIDDEN}";
+
+# History
+# -----------------------------------------------------------------------------
+# When the command contains an invalid history operation (for instance when
+# using an unescaped "!" (I get that a lot in quick e-mails and commit
+# messages) or a failed substitution (e.g. "^foo^bar" when there was no "foo"
+# in the previous command line), do not throw away the command line, but let me
+# correct it.
+shopt -s histreedit;
+
+# Eternal bash history.
+# ---------------------
+# Undocumented feature which sets the size to "unlimited".
+# http://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTTIMEFORMAT="[%F %T] "
+# When executing the same command twice or more in a row, only store it once.
+export HISTCONTROL=ignoredups;
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
+# Force prompt to write history after every command.
+# http://superuser.com/questions/20900/bash-history-loss
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
