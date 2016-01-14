@@ -11,12 +11,13 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ###############################################################################
 # General UI/UX                                                               #
 ###############################################################################
+echo "[+] General UI/UX"
 
 # Set computer name (as done via System Preferences → Sharing)
-sudo scutil --set ComputerName "Trebuchet"
-sudo scutil --set HostName "Trebuchet"
-sudo scutil --set LocalHostName "Trebuchet"
-sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "Trebuchet"
+sudo scutil --set ComputerName "scorpio"
+sudo scutil --set HostName "scorpio"
+sudo scutil --set LocalHostName "scorpio"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "scorpio"
 
 # Set standby delay to 24 hours (default is 1 hour)
 # sudo pmset -a standbydelay 86400
@@ -76,6 +77,7 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
+echo "[+] Trackpad, mouse, keyboard, Bluetooth accessories, and input"
 
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
@@ -118,6 +120,7 @@ launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/nul
 ###############################################################################
 # Screen                                                                      #
 ###############################################################################
+echo "[+] Screen"
 
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1
@@ -135,6 +138,7 @@ defaults write com.apple.screencapture disable-shadow -bool true
 ###############################################################################
 # Security                                                                    #
 ###############################################################################
+echo "[+] Security"
 
 # Make sure there is no password hint set.
 sudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0
@@ -192,21 +196,13 @@ sudo defaults write /Library/Preferences/com.apple.alf stealthenabled 1
 # Disable Speech Recognition.
 sudo defaults write "com.apple.speech.recognition.AppleSpeechRecognition.prefs" StartSpeakableItems -bool false
 
-# Disable Text to Speech settings.
-sudo defaults write "com.apple.speech.synthesis.general.prefs" TalkingAlertsSpeakTextFlag -bool false
-sudo defaults write "com.apple.speech.synthesis.general.prefs" SpokenNotificationAppActivationFlag -bool false
-sudo defaults write "com.apple.speech.synthesis.general.prefs" SpokenUIUseSpeakingHotKeyFlag -bool false
-sudo defaults delete "com.apple.speech.synthesis.general.prefs" TimeAnnouncementPrefs
-
-# Disable DVD or CD Sharing.
-sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.ODSAgent.plist
-
 # Enforce Gatekeeper
 /usr/sbin/spctl --master-enable && /usr/sbin/spctl --enable --label 'Developer ID'
 
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################
+echo "[+] Finder"
 
 # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
 defaults write com.apple.finder QuitMenuItem -bool true
@@ -284,6 +280,7 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
+echo "[+] Dock, Dashboard, and hot corners"
 
 # Enable highlight hover effect for the grid view of a stack (Dock)
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
@@ -380,6 +377,7 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 ###############################################################################
 # Activity Monitor                                                            #
 ###############################################################################
+echo "[+] Activity Monitor"
 
 # Show the main window when launching Activity Monitor
 defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
@@ -394,6 +392,7 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 ###############################################################################
 # Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
 ###############################################################################
+echo "[+] Address Book, Dashboard, iCal, TextEdit, and Disk Utility"
 
 # Enable the debug menu in Address Book
 defaults write com.apple.addressbook ABShowDebugMenu -bool true
@@ -417,6 +416,7 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 ###############################################################################
 # Mac App Store                                                               #
 ###############################################################################
+echo "[+] Mac App Store"
 
 # Enable the WebKit Developer Tools in the Mac App Store
 defaults write com.apple.appstore WebKitDeveloperExtras -bool true
@@ -427,6 +427,7 @@ defaults write com.apple.appstore ShowDebugMenu -bool true
 ###############################################################################
 # Messages                                                                    #
 ###############################################################################
+echo "[+] Messages"
 
 # Disable automatic emoji substitution (i.e. use plain text smileys)
 # defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
@@ -440,6 +441,7 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 ###############################################################################
 # Transmission.app                                                            #
 ###############################################################################
+echo "[+] Transmission.app"
 
 # Use `~/Documents/Torrents` to store incomplete downloads
 defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
@@ -459,4 +461,5 @@ defaults write org.m0k.transmission WarningLegal -bool false
 ###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
+echo "[+] Kill affected applications"
 echo "Done. Note that some of these changes require a logout/restart to take effect."

@@ -5,10 +5,56 @@ alias s="source $HOME/.bash/shell"
 alias subl="reattach-to-user-namespace ~/bin/subl"
 alias preview="open -a Preview"
 alias pb="curl -F 'f:1=<-'"
+alias ag="ag --pager=less"
+alias sage="(deactivate && /Applications/SageMath-7.6.app/sage)"
+
+function lawyer() {
+    echo 'PRIVILEGED AND CONFIDENTIAL
+ATTORNEY WORK PRODUCT
+PREPARED AT THE DIRECTION OF COUNSEL
+St. Jude Medical is now Abbott.'  | pbcopy
+}
+
+function context() {
+    kubectl config use-context "$1" && echo "$1" > ~/.kube-ctx
+}
+
+function hipchat() {
+    sudo launchctl unload -w /etc/openvpn/org.openvpn.praetorian.plist
+    sudo launchctl load -w /etc/openvpn/org.openvpn.praetorian.plist
+}
+
+function parsifal() {
+    heads=${@:1:$(($# - 1))}
+    tail=${@:$#}
+    if [[ -z "$heads" || ! $tail == *"/"* ]]; then
+        docker run --rm parsifal $tail
+    else
+        dir=$(dirname "$tail")
+        base=$(basename "$tail")
+        docker run --rm -v "$dir:/opt" --workdir /opt parsifal $heads $base
+    fi
+}
+
+function caradoc() {
+    heads=${@:1:$(($# - 1))}
+    tail=${@:$#}
+    if [[ -z "$heads" || ! $tail == *"/"* ]]; then
+        docker run --rm caradoc $tail
+    else
+        dir=$(dirname "$tail")
+        base=$(basename "$tail")
+        docker run --rm -it -v "$dir:/opt" --workdir /opt caradoc $heads $base
+    fi
+}
+
+function et() {
+    docker run --rm -v ~/research/et:/root/host-share --privileged -it --workdir=/root ctfhacker/epictreasure
+}
 
 function prae() {
     export __prompt_color="$FG_RED"
-    export PS1="\${__prompt_color}-[ \\t ] engineer@praetorian \\w\\e[m\\n\\$ ";
+    export PS1="\${__prompt_color}-[ \\t ] engineer@workstation \e[m\\n\\$ ";
 }
 
 function ginit(){
@@ -34,6 +80,19 @@ function f() {
 }
 function f1() {
     f "$@"|head -n1
+}
+function sf() {
+    subl $(find . -iname "$@")
+}
+function vf() {
+    vim $(find . -iname "$@")
+}
+
+function fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
 }
 
 # Utilities

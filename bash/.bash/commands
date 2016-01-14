@@ -24,6 +24,12 @@ paths_to_add=(
 	/usr/{,s}bin
 	# X binaries
 	/usr/X11/bin
+    # Go
+    "$HOME/go/bin"
+    # Ruby
+    /usr/local/opt/ruby/bin
+    # Ruby shims
+    "$HOME/.rbenv/shims"
 );
 
 # Create an array of directories currently in the PATH variable.
@@ -52,13 +58,6 @@ done;
 printf -v PATH "%s:" "${new_paths[@]}";
 export PATH="${PATH%:}";
 unset {old,new}_path{,s} path{s,}_to_add;
-
-# OS X's file system is case-insensitive by default, so use aliases to get
-# "GET"/"HEAD"/… working. (Otherwise "HEAD" would execute "/usr/bin/head".)
-[[ "$OSTYPE" =~ ^darwin ]] && for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
-	alias "$method"="/usr/bin/lwp-request -m $method";
-done;
-unset method;
 
 # Confirm before overwriting
 # -----------------------------------------------------------------------------
@@ -114,16 +113,6 @@ export LESS="${less_options[*]}";
 unset less_options;
 export PAGER='less';
 
-# Make "less" transparently unpack archives etc.
-if [ -x /usr/bin/lesspipe ]; then
-	eval $(/usr/bin/lesspipe);
-elif command -v lesspipe.sh > /dev/null; then
-	# MacPorts recommended "/opt/local/bin/lesspipe.sh", but this is more
-	# portable for people that have it in another directory in their $PATH.
-	eval $(lesspipe.sh);
-fi;
-
-
 # Colors
 # -----------------------------------------------------------------------------
 # Always use colour output for "ls".
@@ -143,9 +132,6 @@ complete -v set unset;
 	[ -f "$file" ] && source "$file";
 done;
 unset file;
-
-# Brew autocompletion
-[ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion;
 
 # Utilities
 # -----------------------------------------------------------------------------

@@ -38,14 +38,6 @@ for lang in en_US en_GB en; do
 done;
 unset available_locales lang locale;
 
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-
-# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
-
-
 # ANSI colours and font properties for xterm
 # -----------------------------------------------------------------------------
 # See http://invisible-island.net/xterm/ctlseqs/ctlseqs.html

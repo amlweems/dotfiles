@@ -1,6 +1,6 @@
 [core]
 	# Use a global .gitignore file.
-	excludesfile = ~/.gitignore
+	excludesfile = /Users/amlweems/.gitignore_global
 
 	# Enable parallel I/O for operations like "git diff".
 	# See http://stackoverflow.com/q/18257622/276478
@@ -11,6 +11,8 @@
 	# near-ish future. See the interesting and well-researched article at
 	# http://blog.cuviper.com/2013/11/10/how-short-can-git-abbreviate/
 	abbrev = 12
+	editor = vim
+	attributesfile = /Users/amlweems/.gitattributes
 
 [color]
 	# Use colors by default when the output is a terminal that supports them.
@@ -21,10 +23,6 @@
 	match = black yellow
 
 [diff]
-	# Use more time to create better diffs. E.g. matching opening/closing braces
-	# from neighbour functions.
-	algorithm = patience
-
 	# Tells Git to detect renames. If set to "true", it will enable basic
 	# rename detection. If set to "copies", it will detect copies, as well.
 	renames = copies
@@ -80,6 +78,13 @@
 	# to use "--" to separate paths from banch names, which is a Good Thing™.)
 	go = checkout -B
 [user]
-	email = "amlweems@gmail.com"
-	name = "Anthony Weems"
+	email = anthony.weems@praetorian.com
+	name = Anthony Weems
 	signingkey = B56CD331
+[gitreview]
+	remote = origin
+	defaultbranch = dev
+	host = gerrit.praetorianlabs.com
+	username = admin
+[url "git@git.praetorianlabs.com:"]
+    insteadOf = https://git.praetorianlabs.com/

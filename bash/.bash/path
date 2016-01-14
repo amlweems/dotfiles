@@ -1,4 +1,1 @@
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export PATH=$PATH:/usr/local/opt/ruby/bin
-export PATH=$PATH:$HOME/bin
+export GOPATH=~/go

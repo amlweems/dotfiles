@@ -8,6 +8,13 @@ function title () {
 	echo -n $'\e]0;'"$@"$'\a';
 }
 
+function __prompt_kubectx () {
+    ctx="$(cat ~/.kube-ctx)"
+    if [ "$ctx" = "production" ]; then
+        echo -ne "${FONT_BOLD}${FG_RED}";
+    fi
+}
+
 # Display an error message inside the prompt when the previous command has
 # failed. If it was terminated using a signal, display the signal's name. For
 # example, terminating a command using Ctrl+C would display: "[ SIGINT ]".
@@ -25,7 +32,8 @@ function __prompt_display_error () {
 	return "$ret";
 }
 
-export PS1="\${__prompt_color}-[ \\t ] [ \$(__prompt_display_error) ] \\u@\\h \\w$\\e[m\\n\\$ ";
+export __prompt_color="$FG_BLUE"
+export PS1="\${__prompt_color}\$(__prompt_display_error 2>/dev/null || :) \$(__prompt_kubectx)\\w\\e[m\\n\\$ ";
 
 # Restore the original prompt for multiline commands (PS2). This overrides any
 # system-wide customisations in /etc/profile, for instance.

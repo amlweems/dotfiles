@@ -1,12 +1,12 @@
 " Vundle
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-Plugin 'scrooloose/syntastic'
-
-call vundle#end()
-filetype plugin on
+"set rtp+=~/.vim/bundle/Vundle.vim
+"call vundle#begin()
+"Plugin 'gmarik/Vundle.vim'
+"Plugin 'scrooloose/syntastic'
+"
+"call vundle#end()
+"filetype plugin on
 
 " Clear search highlights with <CR>
 nnoremap <CR> :nohlsearch<CR>/<BS>
@@ -22,6 +22,10 @@ nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 " The smash escape!
 inoremap jj <Esc>
+inoremap kk <Esc>
+
+" safe paste :-)
+nnoremap <leader>p "+p<ESC>
 
 noremap j gj
 noremap k gk
@@ -54,7 +58,6 @@ set directory=~/.vim/swaps
 if exists("&undodir")
 	set undodir=~/.vim/undo
 endif
-set breakindent
 
 " Respect modeline in files
 set modeline
@@ -67,7 +70,7 @@ set number
 " Enable syntax highlighting
 syntax on
 " Highlight current line
-set cursorline
+"set cursorline
 " Make tabs as wide as four spaces
 set tabstop=4
 " Set tab spacing to four spaces
@@ -87,8 +90,6 @@ set ignorecase
 set incsearch
 " Always show status line
 set laststatus=2
-" Enable mouse in all modes
-set mouse=a
 " Disable error bells
 set noerrorbells
 " Don’t reset cursor to start of line when moving around.
@@ -105,3 +106,11 @@ set title
 set showcmd
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
+" Don't set the title to 'Thanks for flying Vim' when exiting
+set titleold=
+
+"highlight clear SpellBad
+"highlight SpellBad cterm=underline
+"autocmd FileType markdown set spell
+"set spellcapcheck=
+
