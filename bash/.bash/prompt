@@ -33,7 +33,7 @@ function __prompt_display_error () {
 }
 
 export __prompt_color="$FG_BLUE"
-export PS1="\${__prompt_color}\$(__prompt_display_error 2>/dev/null || :) \$(__prompt_kubectx)\\w\\e[m\\n\\$ ";
+export PS1="\${__prompt_color}\$(__prompt_display_error 2>/dev/null || :) \\w\\e[m\\n\\$ ";
 
 # Restore the original prompt for multiline commands (PS2). This overrides any
 # system-wide customisations in /etc/profile, for instance.
