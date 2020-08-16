@@ -2,26 +2,106 @@
 # Shortcuts
 alias i="ipython"
 alias s="source $HOME/.bash/shell"
-alias subl="reattach-to-user-namespace ~/bin/subl"
 alias preview="open -a Preview"
 alias pb="curl -F 'f:1=<-'"
 alias ag="ag --pager=less"
-alias sage="(deactivate && /Applications/SageMath-7.6.app/sage)"
+alias hex="open -a 'Hex Fiend'"
 
-function lawyer() {
-    echo 'PRIVILEGED AND CONFIDENTIAL
-ATTORNEY WORK PRODUCT
-PREPARED AT THE DIRECTION OF COUNSEL
-St. Jude Medical is now Abbott.'  | pbcopy
+function de-santa {
+    sudo /sbin/kextunload -b com.google.santa-driver
+    sudo launchctl unload /Library/LaunchDaemons/com.google.santad.plist
+}
+
+function rng() {
+    openssl rand -base64 "${1:-24}" | tr 'A-Z' 'a-z' | tr -d '+-='
+}
+
+function pem2ascii() {
+    openssl x509 -outform der | der2ascii
+}
+
+function ascii2pem() {
+    ascii2der | openssl x509 -inform der
+}
+
+function cs() {
+    csearch -n "$@" | cut -c44- | rg "$@"
+}
+
+alias rot13="tr 'a-zA-Z' 'n-za-mN-ZA-M'"
+
+function translate() {
+    query="$(cat xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')"
+    curl -s "https://translate.googleapis.com/translate_a/single?client=gtx&sl=$1&tl=$2&dt=t&q=$query" | jq -r '.[0][]|.[0]'
+}
+
+function spanish() {
+    translate en es
+}
+
+function de-spanish() {
+    translate es en
+}
+
+alias stephen="spanish | rot13 | base64"
+alias de-stephen="base64 -D | rot13 | tee -a /dev/stderr | de-spanish"
+
+function minecraft() {
+    java -jar '/Users/amlweems/Library/Application Support/minecraft/launcher.jar'
+}
+
+function jwt() {
+    pbpaste | step crypto jwt inspect -insecure | jq .
+}
+
+function personal-git() {
+    CORRECT_NAME="Anthony Weems"
+    CORRECT_EMAIL="amlweems@gmail.com"
+
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
 }
 
 function context() {
     kubectl config use-context "$1" && echo "$1" > ~/.kube-ctx
 }
 
-function hipchat() {
-    sudo launchctl unload -w /etc/openvpn/org.openvpn.praetorian.plist
-    sudo launchctl load -w /etc/openvpn/org.openvpn.praetorian.plist
+function docker-pwd() {
+    docker run --rm -it -v "$(pwd):/host" -w /host "$@"
+}
+
+function docker-go() {
+    docker run --rm -it -v ~/go:/go -e GOPATH=/go -v "$(pwd):/host" -w /host --entrypoint go golang:alpine $@
+}
+
+function docker-net-go() {
+    docker run --rm -it -v ~/go:/go -e GOPATH=/go -v "$(pwd):/host" -w /host -p 8000:8000 --entrypoint go golang:alpine $@
+}
+
+function semgrep() {
+    docker run --rm -it --net=none -v "$(pwd):/src" returntocorp/semgrep:latest $@
+}
+
+function nsp() {
+    packages=$(find . -name package.json)
+    count=$(echo "$packages" | wc -l | awk '{print $1}')
+    if [ "$count" -gt "20" ]; then
+        read -p "$count package.json files. Are you sure? [y/n] " -n 1 -r && echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            return 1
+        fi
+    fi
+    for package in $packages; do
+        echo "$package"
+        (cd "$(dirname "$package")"
+         if [ ! -f package-lock.json ]; then
+           docker run --rm -it -v "$(pwd):/src" -w /src node npm i --package-lock-only
+         fi
+         docker run --rm -it -v "$(pwd):/src:ro" -w /src node npm audit --only=prod
+        )
+    done
 }
 
 function parsifal() {
@@ -48,8 +128,31 @@ function caradoc() {
     fi
 }
 
+function img() {
+    docker run --rm -it                             \
+        --name img                                  \
+        --volume "$(pwd):/home/user/src:ro"         \
+        --workdir /home/user/src                    \
+        --volume "${HOME}/.docker:/root/.docker:ro" \
+        --cap-add SETGID                            \
+        --cap-add SETUID                            \
+        --security-opt apparmor=unconfined          \
+        --security-opt seccomp=unconfined           \
+        r.j3ss.co/img:latest $@
+}
+
 function et() {
     docker run --rm -v ~/research/et:/root/host-share --privileged -it --workdir=/root ctfhacker/epictreasure
+}
+
+function proselint() {
+    docker run --net=none --rm -v "$(pwd):/workdir:ro" proselint "$@" | \
+      grep -v typography.symbols.curly_quotes | \
+      grep -v typography.symbols.ellipsis
+}
+
+function hunspell() {
+    docker run --net=none --rm -it -v "$(pwd):/workdir:ro" hunspell "$@"
 }
 
 function prae() {
@@ -57,29 +160,8 @@ function prae() {
     export PS1="\${__prompt_color}-[ \\t ] engineer@workstation \e[m\\n\\$ ";
 }
 
-function ginit(){
-    if [ -e ".git" ]; then
-        echo "already initialized"
-    else
-        git init
-        git add .
-        git commit -m "Initial commit"
-    fi
-}
-
-function shrug(){
-    echo -n "¯\_(ツ)_/¯" | pbcopy
-}
-
-function grepr(){
-    grep -ir "$*" ./
-}
-
 function f() {
     find . -iname "$@"
-}
-function f1() {
-    f "$@"|head -n1
 }
 function sf() {
     subl $(find . -iname "$@")
@@ -97,3 +179,4 @@ function fd() {
 
 # Utilities
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias dns="ipconfig getoption en0 domain_name_server"
