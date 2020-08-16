@@ -1,1 +1,4 @@
 export GOPATH=~/go
+export PATH="$PATH:$HOME/go/bin"
+export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
+export PATH="$PATH:$HOME/Library/Android/sdk/emulator"
