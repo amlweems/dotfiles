@@ -41,6 +41,9 @@ set show-all-if-ambiguous on
 # Show extra file information when completing, like ls -F does.
 set visible-stats on
 
+# Protect against malicious pastes
+set enable-bracketed-paste on
+
 # Be more intelligent when autocompleting by also looking at the text after
 # the cursor. For example, when the current line is "cd ~/src/mozil", and
 # the cursor is on the "z", pressing Tab will not autocomplete it to "cd
