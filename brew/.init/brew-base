@@ -1,7 +1,9 @@
 bash
-stow
-reattach-to-user-namespace
-tree
-wget
+fzf
+golang
 nmap
 sqlmap
+step
+stow
+tree
+wget
