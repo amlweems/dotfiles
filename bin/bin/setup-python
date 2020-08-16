@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ ! -d "~/.venv/d3" ]]; then
+  python3 -m venv ~/.venv/d3
+fi
+
+source ~/.venv/d3/bin/activate
+pip install --upgrade pip
+
+for module in $(cat ~/.init/py3-base); do
+  pip install "${module}"
+done

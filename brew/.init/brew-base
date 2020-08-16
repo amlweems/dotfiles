@@ -1,0 +1,7 @@
+bash
+stow
+reattach-to-user-namespace
+tree
+wget
+nmap
+sqlmap
