@@ -1,0 +1,11 @@
+source ~/.venv/d3/bin/activate
+
+# ref: https://github.com/jeffdaily/parasail-python/issues/25#issuecomment-554731391
+export REQUESTS_CA_BUNDLE=/usr/local/etc/openssl@1.1/cert.pem
+export SSL_CERT_FILE=/usr/local/etc/openssl@1.1/cert.pem
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+
+export ANDROID_HOME=~/Library/Android/sdk
+
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
